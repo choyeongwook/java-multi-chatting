@@ -49,10 +49,7 @@ public class ChatServerController implements Initializable {
 						// 클라이언트가 접속해서 만들어진 socket을 이용해서
 						// 통신처리를 담당하는 Thread를 만들어서 실행
 						new Thread(new ConnectedThread(s)).start();
-
 					}
-					
-					
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

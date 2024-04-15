@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectedThread implements Runnable {
 
@@ -12,11 +14,15 @@ public class ConnectedThread implements Runnable {
     private BufferedReader in;
     private PrintWriter out;
 
+    private static List<PrintWriter> outStreamList = new ArrayList<>();
+
     public ConnectedThread(Socket s) {
         this.s = s;
         try {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream());
+
+            outStreamList.add(out);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,8 +40,14 @@ public class ConnectedThread implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            out.println(msg);
-            out.flush();
+//            out.println(msg);
+//            out.flush();
+
+//             연결된 모든 클라이언트에게 print
+            for (PrintWriter out : outStreamList) {
+                out.println(msg);
+                out.flush();
+            }
 
         }
 
