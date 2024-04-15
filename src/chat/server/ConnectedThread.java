@@ -1,5 +1,8 @@
 package chat.server;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,16 +16,19 @@ public class ConnectedThread implements Runnable {
     private Socket s;
     private BufferedReader in;
     private PrintWriter out;
+    private TextArea textArea;
 
     private static List<PrintWriter> outStreamList = new ArrayList<>();
 
-    public ConnectedThread(Socket s) {
+    public ConnectedThread(Socket s, TextArea textArea) {
         this.s = s;
+        this.textArea = textArea;
         try {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream());
 
             outStreamList.add(out);
+            printMessage("새 클라이언트 접속: " + s.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,6 +43,18 @@ public class ConnectedThread implements Runnable {
             try {
                 msg = in.readLine();
 
+                // 클라이언트가 연결 종료 요청 시
+                if (msg == null) {
+                    outStreamList.remove(out);
+                    printMessage("클라이언트 연결 종료: " + s.toString());
+
+                    in.close();
+                    out.close();
+                    s.close();
+
+                    break;
+                }
+                System.out.println(outStreamList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -48,8 +66,12 @@ public class ConnectedThread implements Runnable {
                 out.println(msg);
                 out.flush();
             }
-
         }
+    }
 
+    private void printMessage(String msg) {
+        Platform.runLater(() -> {
+            textArea.appendText(msg + "\n");
+        });
     }
 }

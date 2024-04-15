@@ -41,13 +41,16 @@ public class ChatClientController implements Initializable {
 			
 			printMessage("서버에 연결되었습니다.");
 
+			// readLine() 메소드로 인해 block을 피하기 위해 쓰레드로 읽기 동작 수행
 			new Thread(() -> {
 				while (true) {
 					try {
 						String receivedMsg = in.readLine();
 						printMessage(receivedMsg);
 					} catch (IOException e) {
-						throw new RuntimeException(e);
+						printMessage("연결을 종료합니다.");
+						break;
+//						throw new RuntimeException(e);
 					}
 				}
 			}).start();
@@ -65,18 +68,18 @@ public class ChatClientController implements Initializable {
 		String msg = inputNameField.getText() + " > " + inputMessageField.getText();
 		out.println(msg);
 		out.flush();
-
-		// readLine() 메소드로 인해 block을 피하기 위해 쓰레드로 읽기 동작 수행
-//		try {
-//			String receivedMsg = in.readLine();
-//			printMessage(receivedMsg);
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
 	}
 	public void handleQuitButtonAction(ActionEvent e) {
 		// TODO: 서버 연결 해제
-		System.out.println("종료버튼 클릭");
+
+        try {
+			s.close();
+
+			in.close();
+			out.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 	}
 	
 	public void sendMessage(String msg) {
