@@ -70,11 +70,9 @@ public class ChatClientController implements Initializable {
 		out.flush();
 	}
 	public void handleQuitButtonAction(ActionEvent e) {
-		// TODO: 서버 연결 해제
-
+		// 서버 연결 해제
         try {
 			s.close();
-
 			in.close();
 			out.close();
         } catch (IOException ex) {

@@ -60,5 +60,9 @@ public class ChatServerController implements Initializable {
 		}
 		
 	}
+
+	public void close() {
+
+	}
 	
 }

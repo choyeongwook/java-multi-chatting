@@ -28,7 +28,7 @@ public class ConnectedThread implements Runnable {
             out = new PrintWriter(s.getOutputStream());
 
             outStreamList.add(out);
-            printMessage("새 클라이언트 접속: " + s.toString());
+            printMessage("새 클라이언트 접속: " + s.toString() + " | 현재 접속자 " + outStreamList.size() + "명");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +46,7 @@ public class ConnectedThread implements Runnable {
                 // 클라이언트가 연결 종료 요청 시
                 if (msg == null) {
                     outStreamList.remove(out);
-                    printMessage("클라이언트 연결 종료: " + s.toString());
+                    printMessage("클라이언트 연결 종료: " + s.toString() + " | 현재 접속자 " + outStreamList.size() + "명");
 
                     in.close();
                     out.close();
@@ -54,7 +54,6 @@ public class ConnectedThread implements Runnable {
 
                     break;
                 }
-                System.out.println(outStreamList);
             } catch (IOException e) {
                 e.printStackTrace();
             }

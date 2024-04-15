@@ -23,7 +23,15 @@ public class ChatClient extends Application {
 		
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
-		primaryStage.show();		
+
+		// Java Application 창 닫을 시 소켓 close
+		ChatClientController controller = loader.getController();
+		primaryStage.setOnCloseRequest((e) -> {
+			controller.handleQuitButtonAction(null);
+		});
+
+
+		primaryStage.show();
 	}
 	
 	public static void main(String[] args) {
